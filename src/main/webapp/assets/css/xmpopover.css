@@ -1,0 +1,48 @@
+@CHARSET "UTF-8";
+.xmpopover{
+	border:1px solid #FFBB76;
+	background: #FFFCEF;
+	width: 150px;
+	height: 100px;
+	font-size:12px;
+	position: fixed;
+	left:100px;
+	top:250px;
+	z-index: 9999;
+}
+
+.arrow{
+	font-size:12px;
+	font-style: normal;
+	overflow: hidden;
+	position: absolute;
+}
+.arrow em,
+.arrow i{
+	font-size:12px;
+	font-style:normal;
+	font-family: 黑体;
+	position: absolute;
+	left:0px;
+	top:0px;
+}
+.arrow em{
+	color: #FFBB76;
+}
+.arrow i{
+	color: #FFFCEF;
+	text-shadow: none;
+}
+.arrow-left{
+	height: 12px;
+	width: 6px;
+	top:12px;
+	margin-top: -6px;
+	left:-6px;
+}
+.arrow-left em{
+	left:1px;
+}
+.arrow-left i{
+	left:2px;
+}

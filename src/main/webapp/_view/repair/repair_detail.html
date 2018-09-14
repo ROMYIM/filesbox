@@ -1,0 +1,152 @@
+#@layout() #define main() #@menu()
+<div class="right">
+	<form id="fileBoxForm" class="form-horizontal account-form" >
+		<div class="form-group">
+			<label class="col-sm-3 control-label">报修单号</label>
+			<div class="col-sm-9">
+				<input type="number" class="form-control" value="#(information.id)"
+					name="id" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">报修用户手机</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" value="#(information.phone)"
+					name="phone" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">设备号</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" value="#(information.device_id??)"
+					 id = "deviceId" name="deviceId"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">信报箱数量</label>
+			<div class="col-sm-9">
+				<input type="number" class="form-control" value="#(information.cabinet_num??)"
+					 id = "cabinetNum" name="cabinetNum"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">信报箱号</label>
+			<div class="col-sm-9">
+				<input type="number" class="form-control" value="#(information.number??)"
+					 id = "number" name="number"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">故障类型</label>
+			<div class="col-sm-9">
+				#if(information.type == com.filebox.common.model.RepairApplication::OPENED_BROKEN)
+				<input type="text" class="form-control" value="无法开门"
+					 id = "type" name="type"  readonly="readonly">
+				#elseif(information.type == com.filebox.common.model.RepairApplication::CLOSED_BROKEN)
+				<input type="text" class="form-control" value="无法关门"
+					 id = "type" name="type"  readonly="readonly">
+				#elseif(information.type == com.filebox.common.model.RepairApplication::BOX_POLLUTED)
+				<input type="text" class="form-control" value="箱子污染"
+					 id = "type" name="type"  readonly="readonly">
+				#elseif(information.type == com.filebox.common.model.RepairApplication::BOX_BROKEN)
+				<input type="text" class="form-control" value="箱子破损"
+					 id = "type" name="type"  readonly="readonly">
+				#elseif(information.type == com.filebox.common.model.RepairApplication::OTHER_PROBLEM)
+				<input type="text" class="form-control" value="其他问题"
+					 id = "type" name="type"  readonly="readonly">
+				#end
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">报修时间</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" value="#date(information.application_time??, "yyyy-MM-dd HH:mm")"
+					 id = "applicationTime" name="applicationTime"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">接单时间</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" value="#date(information.order_time??, "yyyy-MM-dd HH:mm")"
+					 id = "orderTime" name="orderTime"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">完修时间</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" value="#date(information.fixed_time??, "yyyy-MM-dd HH:mm")"
+					 id = "fixedTime" name="fixedTime"  readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group">
+		<label class="col-sm-3 control-label">报修详情</label>
+			<div class="col-sm-9">
+				<textarea cols=40 rows=4 id="repairDetaile" name="repairDetail" readonly="readonly">
+				#(information.repair_detail??)
+				</textarea>
+			</div>
+		</div>
+		<div class="form-group submit" style="margin-top: -10px;margin-left: 26px">
+			<a id="btnSubmit" type="button" class="btn btn-primary" href="repair">返回</a>
+		</div>
+	</form>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+	<script type="text/javascript">
+	function onSubmit(){
+		$("#fileBoxForm").submit();
+	}
+	
+	$(document).ready(function() {
+		$("#fileBoxForm").ajaxForm({
+			dataType: "json"
+			, beforeSubmit: function(formData, jqForm, options) {
+			}
+			, success: function(ret) {
+				if (ret.success) {
+					location.href = "filebox";
+					alert(ret.msg);
+				} else {
+					showErrorMsg(ret.msg);
+				}
+			}
+			, error: function(ret) {
+				alert(ret);
+			}
+			, complete: function(ret) { }       // 无论是 success 还是 error，最终都会被回调
+		});
+		
+	});
+	
+	function searchOwnerInfo(obj) {
+		$.ajax('owner/getOwnerInfo', {
+			type: "POST"
+			, dataType: "json"
+			, data: {myPhone:$("#phone").val()}
+			, beforeSend: function() {
+
+			}
+			, error: function(ret) {
+				showErrorMsg(ret);
+			}
+			, success: function(ret) {
+				if (ret.success) {
+					var data = ret.data;
+					if(data != "" && data != null){
+						$("#unit").val(data.unit);
+						$("#floor").val(data.floor);
+						$("#roomAddress").val(data.room_address);
+						$("#passwordCard").val(data.password_card);
+					}
+				} else {
+					var msg = ret.msg;
+				}
+			}
+		});
+		
+	}
+	</script>
+#end

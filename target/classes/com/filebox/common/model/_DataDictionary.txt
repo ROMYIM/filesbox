@@ -1,0 +1,468 @@
+Table: account
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   | 用户ID    
+ name      | VARCHAR(50)   | YES  |     |                   | 姓名      
+ phone     | VARCHAR(13)   | YES  |     |                   | 手机号     
+ password  | VARCHAR(32)   | NO   |     |                   | 密码      
+ role      | INT(10)       | NO   |     |                   | 管理员身份 1 系统管理员 2-快递柜管理员
+ status    | INT(10)       | NO   |     | 1                 | 状态 正常-1 禁用-0
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ logintime | TIMESTAMP(19) | YES  |     |                   | 登陆时间    
+-----------+---------------+------+-----+-------------------+---------
+
+Table: account_device
+------------+-------------+------+-----+---------+---------
+ Field      | Type        | Null | Key | Default | Remarks 
+------------+-------------+------+-----+---------+---------
+ account_id | INT(10)     | NO   | PRI |         |         
+ device_id  | VARCHAR(50) | NO   | PRI |         |         
+ status     | INT(10)     | YES  |     | 1       |         
+------------+-------------+------+-----+---------+---------
+
+Table: admin_log
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   | ID      
+ ip        | VARCHAR(20)   | YES  |     |                   | 请求IP    
+ access    | VARCHAR(10)   | YES  |     |                   | 访问平台    
+ username  | VARCHAR(20)   | YES  |     |                   | 账号      
+ action    | VARCHAR(255)  | YES  |     |                   | 动作      
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+-----------+---------------+------+-----+-------------------+---------
+
+Table: adv_type
+-----------+-------------+------+-----+---------+---------
+ Field     | Type        | Null | Key | Default | Remarks 
+-----------+-------------+------+-----+---------+---------
+ id        | INT(10)     | NO   | PRI |         |         
+ type_name | VARCHAR(50) | YES  |     |         | 广告类型    
+ code      | VARCHAR(50) | YES  |     |         | 广告类型代码  
+-----------+-------------+------+-----+---------+---------
+
+Table: advertising
+------------+---------------+------+-----+-------------------+---------
+ Field      | Type          | Null | Key | Default           | Remarks 
+------------+---------------+------+-----+-------------------+---------
+ id         | INT(10)       | NO   | PRI |                   | 广告ID    
+ operatorId | INT(10)       | NO   |     |                   |         
+ photo      | VARCHAR(255)  | YES  |     |                   | 广告图片    
+ sort       | INT(10)       | YES  |     |                   | 排序      
+ sysupdate  | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+------------+---------------+------+-----+-------------------+---------
+
+Table: advertising_phone
+-----------------+---------------+------+-----+---------+---------
+ Field           | Type          | Null | Key | Default | Remarks 
+-----------------+---------------+------+-----+---------+---------
+ id              | INT(10)       | NO   | PRI |         |         
+ operatorId      | INT(10)       | NO   |     |         |         
+ link            | VARCHAR(255)  | YES  |     |         |         
+ textcontent     | TEXT(65535)   | YES  |     |         |         
+ photo           | VARCHAR(255)  | YES  |     |         |         
+ sort            | INT(10)       | YES  |     |         |         
+ sysupdate       | TIMESTAMP(19) | YES  |     |         |         
+ adv_status      | INT(10)       | YES  |     |         |         
+ informationlink | VARCHAR(255)  | YES  |     |         |         
+ adv_typeId      | INT(10)       | YES  |     |         |         
+-----------------+---------------+------+-----+---------+---------
+
+Table: api_log
+-----------+---------------+------+-----+---------+---------
+ Field     | Type          | Null | Key | Default | Remarks 
+-----------+---------------+------+-----+---------+---------
+ id        | INT(10)       | NO   | PRI |         | ID      
+ ip        | VARCHAR(20)   | YES  |     |         | 请求IP    
+ username  | VARCHAR(20)   | YES  |     |         | 账号      
+ action    | VARCHAR(255)  | YES  |     |         | 动作      
+ sysupdate | TIMESTAMP(19) | YES  |     |         | 更新时间    
+-----------+---------------+------+-----+---------+---------
+
+Table: api_session
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ account_id  | INT(10)       | NO   |     |         | 用户ID    
+ token       | VARCHAR(50)   | NO   |     |         |         
+ access      | INT(10)       | YES  |     |         |         
+ create_time | TIMESTAMP(19) | YES  |     |         |         
+ expireAt    | BIGINT(19)    | YES  |     |         | 过期时间    
+-------------+---------------+------+-----+---------+---------
+
+Table: bind_application
+------------------+------------------+------+-----+---------+---------
+ Field            | Type             | Null | Key | Default | Remarks 
+------------------+------------------+------+-----+---------+---------
+ id               | INT UNSIGNED(10) | NO   | PRI |         |         
+ owner_id         | INT(10)          | NO   |     |         | 用户的Id   
+ phone            | VARCHAR(13)      | YES  |     |         |         
+ box_id           | INT(10)          | NO   |     |         | 信报箱的Id。每个箱子的唯一Id，取自于file_box的Id
+ device_id        | VARCHAR(50)      | NO   |     |         | 设备Id    
+ cabinet_num      | INT(10)          | NO   |     |         | 柜子编号    
+ number           | INT(10)          | NO   |     |         | 箱子编号    
+ code             | INT(10)          | YES  |     |         | 1为申请解绑，0为申请绑定
+ status           | INT(10)          | NO   |     |         |         
+ application_time | DATETIME(19)     | YES  |     |         |         
+ pass_time        | TIMESTAMP(19)    | YES  |     |         |         
+------------------+------------------+------+-----+---------+---------
+
+Table: bonus_points
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ id          | INT(10)      | NO   | PRI |         |         
+ owner_id    | INT(10)      | NO   |     |         |         
+ points      | INT(10)      | YES  |     | 0       |         
+ create_time | DATETIME(19) | YES  |     |         |         
+ detail      | VARCHAR(100) | YES  |     |         |         
+-------------+--------------+------+-----+---------+---------
+
+Table: box_order
+-------------+---------------+------+-----+-------------------+---------
+ Field       | Type          | Null | Key | Default           | Remarks 
+-------------+---------------+------+-----+-------------------+---------
+ order_id    | VARCHAR(50)   | NO   |     |                   | 订单号     
+ express_id  | INT(10)       | NO   |     |                   |         
+ box_number  | INT(10)       | NO   |     |                   |         
+ id          | INT(10)       | NO   | PRI |                   |         
+ create_time | TIMESTAMP(19) | NO   |     | CURRENT_TIMESTAMP |         
+ cabinet_num | INT(10)       | YES  |     |                   |         
+-------------+---------------+------+-----+-------------------+---------
+
+Table: courier_device
+------------+-------------+------+-----+---------+---------
+ Field      | Type        | Null | Key | Default | Remarks 
+------------+-------------+------+-----+---------+---------
+ id         | INT(10)     | NO   | PRI |         |         
+ courier_id | INT(10)     | NO   |     |         |         
+ device_id  | VARCHAR(50) | NO   |     |         |         
+------------+-------------+------+-----+---------+---------
+
+Table: file
+-----------------+---------------+------+-----+-------------------+---------
+ Field           | Type          | Null | Key | Default           | Remarks 
+-----------------+---------------+------+-----+-------------------+---------
+ id              | INT(10)       | NO   | PRI |                   | 快递ID    
+ device_id       | VARCHAR(50)   | NO   |     |                   | 快递柜ID   
+ cabinet_num     | INT(10)       | NO   |     |                   | 柜子编号    
+ box_number      | INT(10)       | NO   |     |                   | 快递箱编号   
+ courier_id      | INT(10)       | YES  |     |                   | 快递员ID   
+ tracking_number | VARCHAR(50)   | YES  |     |                   |         
+ receive_phone   | VARCHAR(13)   | NO   |     |                   | 收件人手机   
+ courier_phone   | VARCHAR(13)   | NO   |     |                   | 快递员手机   
+ save_time       | TIMESTAMP(19) | NO   |     | CURRENT_TIMESTAMP | 投递时间    
+ box_spec        | INT(10)       | NO   |     |                   | 快递箱规格   
+ over_time       | INT(10)       | NO   |     | 0                 | 逾期时间    
+ notice_time     | TIMESTAMP(19) | YES  |     |                   | 通知时间    
+ sysupdate       | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ status          | INT(10)       | NO   |     | 0                 | 状态 1-取出 0-未被取出
+ pickup_code     | VARCHAR(10)   | YES  |     |                   | 提取码     
+ owner_id        | INT(10)       | YES  |     |                   | 所属人id   
+-----------------+---------------+------+-----+-------------------+---------
+
+Table: file_box
+-------------+---------------+------+-----+-------------------+---------
+ Field       | Type          | Null | Key | Default           | Remarks 
+-------------+---------------+------+-----+-------------------+---------
+ id          | INT(10)       | NO   | PRI |                   | 快递箱ID   
+ device_id   | VARCHAR(50)   | NO   |     |                   | 快递柜ID   
+ cabinet_num | INT(10)       | NO   |     |                   | 柜子编号    
+ number      | INT(10)       | NO   |     |                   | 快递箱编号   
+ spec        | INT(10)       | NO   |     |                   | 快递箱规格   
+ code        | INT(10)       | NO   |     | 0                 | 故障码     
+ floor       | INT(10)       | YES  |     |                   | 快递柜楼层   
+ box_status  | INT(10)       | NO   |     | 2                 | 快递箱状态   
+ door_status | INT(10)       | YES  |     | 0                 | 柜门状态    
+ remark      | TEXT(65535)   | YES  |     |                   | 备注      
+ sysupdate   | TIMESTAMP(19) | NO   |     | CURRENT_TIMESTAMP | 更新时间    
+-------------+---------------+------+-----+-------------------+---------
+
+Table: file_box_owner
+------------+---------------+------+-----+-------------------+---------
+ Field      | Type          | Null | Key | Default           | Remarks 
+------------+---------------+------+-----+-------------------+---------
+ id         | INT(10)       | NO   | PRI |                   | 信报箱用户ID 
+ phone      | VARCHAR(13)   | NO   |     |                   | 手机号码    
+ login_time | DATETIME(19)  | YES  |     |                   | 上次登录时间  
+ avatar     | VARCHAR(255)  | YES  |     |                   | 头像地址    
+ status     | INT(10)       | NO   |     | 1                 | 状态 1-正常 0-禁用
+ sysupdate  | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ password   | VARCHAR(50)   | NO   |     |                   | 密码      
+ points     | INT(10)       | YES  |     | 0                 |         
+------------+---------------+------+-----+-------------------+---------
+
+Table: file_courier
+--------------+------------------+------+-----+-------------------+---------
+ Field        | Type             | Null | Key | Default           | Remarks 
+--------------+------------------+------+-----+-------------------+---------
+ id           | INT(10)          | NO   | PRI |                   | 快递员ID   
+ operator_id  | INT(10)          | NO   |     |                   | 快递柜ID   
+ phone        | VARCHAR(13)      | NO   |     |                   | 手机号码    
+ balance      | DOUBLE(10,2)     | NO   |     | 0.00              | 余额      
+ storage_num  | INT UNSIGNED(10) | NO   |     | 0                 | 当前存件数量  
+ delivery_num | INT UNSIGNED(10) | NO   |     | 0                 | 投递数量    
+ login_time   | DATETIME(19)     | YES  |     |                   | 上次登录时间  
+ status       | INT(10)          | NO   |     | 1                 | 状态 1-正常 0-禁用
+ sysupdate    | TIMESTAMP(19)    | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ password     | VARCHAR(50)      | NO   |     |                   | 密码      
+--------------+------------------+------+-----+-------------------+---------
+
+Table: file_device
+----------------+------------------+------+-----+-------------------+---------
+ Field          | Type             | Null | Key | Default           | Remarks 
+----------------+------------------+------+-----+-------------------+---------
+ id             | VARCHAR(50)      | NO   | PRI |                   | 信报柜ID   
+ operator_id    | INT(10)          | YES  |     |                   | 运营商ID   
+ name           | VARCHAR(50)      | YES  |     |                   | 快递名字    
+ address        | VARCHAR(100)     | YES  |     |                   |         
+ cabinet_amount | INT UNSIGNED(10) | YES  |     | 0000000000        | 柜子数量    
+ usage_rate     | VARCHAR(50)      | NO   |     | 0                 | 使用率     
+ sysupdate      | TIMESTAMP(19)    | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ status         | INT(10)          | NO   |     | 1                 | 状态 1 -正常 0-停用
+ province       | VARCHAR(50)      | YES  |     |                   |         
+ city           | VARCHAR(50)      | YES  |     |                   |         
+ district       | VARCHAR(50)      | YES  |     |                   |         
+ lng            | DECIMAL(10,7)    | YES  |     |                   |         
+ lat            | DECIMAL(10,7)    | YES  |     |                   |         
+----------------+------------------+------+-----+-------------------+---------
+
+Table: information
+------------+--------------+------+-----+---------+---------
+ Field      | Type         | Null | Key | Default | Remarks 
+------------+--------------+------+-----+---------+---------
+ id         | INT(10)      | NO   | PRI |         |         
+ operatorId | INT(10)      | YES  |     |         |         
+ sort       | INT(10)      | YES  |     |         |         
+ title      | VARCHAR(255) | YES  |     |         |         
+ content    | VARCHAR(255) | YES  |     |         |         
+------------+--------------+------+-----+---------+---------
+
+Table: login_log
+-----------+--------------+------+-----+---------+---------
+ Field     | Type         | Null | Key | Default | Remarks 
+-----------+--------------+------+-----+---------+---------
+ id        | INT(10)      | NO   | PRI |         | ID      
+ accountId | INT(10)      | NO   |     |         |         
+ loginAt   | DATETIME(19) | NO   |     |         |         
+ ip        | VARCHAR(100) | YES  |     |         |         
+-----------+--------------+------+-----+---------+---------
+
+Table: message
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   | ID      
+ type      | INT(10)       | NO   |     |                   | 消息类型 1-注册 2-取件
+ message   | VARCHAR(255)  | YES  |     |                   | 消息内容    
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+ operator  | VARCHAR(50)   | NO   |     |                   | 操作人     
+ receiver  | VARCHAR(50)   | NO   |     |                   | 接收人     
+-----------+---------------+------+-----+-------------------+---------
+
+Table: model
+-------------+---------------+------+-----+---------+---------
+ Field       | Type          | Null | Key | Default | Remarks 
+-------------+---------------+------+-----+---------+---------
+ id          | INT(10)       | NO   | PRI |         |         
+ name        | VARCHAR(50)   | NO   |     |         | 型号名称    
+ code        | VARCHAR(50)   | YES  |     |         | 编码      
+ box_amount  | INT(10)       | YES  |     |         | 柜子数量    
+ create_time | TIMESTAMP(19) | YES  |     |         | 添加时间    
+-------------+---------------+------+-----+---------+---------
+
+Table: model_detail
+-----------+---------+------+-----+---------+---------
+ Field     | Type    | Null | Key | Default | Remarks 
+-----------+---------+------+-----+---------+---------
+ id        | INT(10) | NO   | PRI |         | 型号详情    
+ model_id  | INT(10) | NO   |     |         | 型号ID    
+ box_num   | INT(10) | NO   |     |         | 箱子号数    
+ box_spec  | INT(10) | NO   |     |         | 箱子规格 1 小 2 中  3 大
+ box_floor | INT(10) | YES  |     |         | 楼层      
+-----------+---------+------+-----+---------+---------
+
+Table: operator
+-------+-------------+------+-----+---------+---------
+ Field | Type        | Null | Key | Default | Remarks 
+-------+-------------+------+-----+---------+---------
+ id    | INT(10)     | NO   | PRI |         |         
+ name  | VARCHAR(50) | YES  |     |         | 运营商名字   
+ code  | VARCHAR(50) | YES  |     |         | 运营商代码   
+-------+-------------+------+-----+---------+---------
+
+Table: owner_detail
+----------------------+---------------+------+-----+-------------------+---------
+ Field                | Type          | Null | Key | Default           | Remarks 
+----------------------+---------------+------+-----+-------------------+---------
+ id                   | INT(10)       | NO   | PRI |                   |         
+ unit                 | VARCHAR(30)   | YES  |     |                   | 单元号     
+ floor                | VARCHAR(30)   | YES  |     |                   | 楼层号     
+ room_address         | VARCHAR(30)   | YES  |     |                   | 房号详细地址  
+ owner_id             | INT(10)       | NO   |     |                   | 归属人id   
+ device_id            | VARCHAR(50)   | NO   |     |                   | 设备id    
+ password_card        | VARCHAR(50)   | YES  |     |                   | ic卡开门   
+ password_fingerprint | VARCHAR(50)   | YES  |     |                   | 指纹开门    
+ owner_device_status  | INT(10)       | NO   |     | 1                 | 用户在这个设备的状态 1-正常 0-禁用
+ sysupdate            | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+----------------------+---------------+------+-----+-------------------+---------
+
+Table: owner_device
+-------------+-------------+------+-----+---------+---------
+ Field       | Type        | Null | Key | Default | Remarks 
+-------------+-------------+------+-----+---------+---------
+ id          | INT(10)     | NO   | PRI |         |         
+ owner_id    | INT(10)     | NO   |     |         | 归属人id   
+ device_id   | VARCHAR(50) | NO   |     |         | 设备id    
+ cabinet_num | INT(10)     | YES  |     |         |         
+ number      | INT(10)     | YES  |     |         | 箱子编号    
+-------------+-------------+------+-----+---------+---------
+
+Table: owner_token
+-------------+-------------+------+-----+---------+---------
+ Field       | Type        | Null | Key | Default | Remarks 
+-------------+-------------+------+-----+---------+---------
+ token_id    | INT(10)     | NO   | PRI |         |         
+ owner_id    | INT(10)     | NO   |     |         | 用户id    
+ token       | VARCHAR(50) | NO   |     |         | 登录令牌    
+ login_time  | BIGINT(19)  | NO   |     |         |         
+ client_type | VARCHAR(11) | YES  |     |         |         
+-------------+-------------+------+-----+---------+---------
+
+Table: pickup_record
+-----------------+---------------+------+-----+-------------------+---------
+ Field           | Type          | Null | Key | Default           | Remarks 
+-----------------+---------------+------+-----+-------------------+---------
+ file_id         | INT(10)       | NO   | PRI |                   | 文件ID    
+ pickup_phone    | VARCHAR(13)   | NO   |     |                   | 取件人手机   
+ pickup_time     | TIMESTAMP(19) | NO   |     | CURRENT_TIMESTAMP | 取件时间    
+ pickup_identity | INT(10)       | NO   |     |                   | 取件身份    
+ cost            | DECIMAL(10)   | NO   |     | 0                 | 花费      
+-----------------+---------------+------+-----+-------------------+---------
+
+Table: postage
+----------------+--------------+------+-----+---------+---------
+ Field          | Type         | Null | Key | Default | Remarks 
+----------------+--------------+------+-----+---------+---------
+ id             | INT(10)      | NO   | PRI |         | ID      
+ device_id      | VARCHAR(50)  | NO   |     |         | 快递柜ID   
+ type           | INT(10)      | NO   |     |         | 规格 1-小 2-中 3-大
+ cost           | DOUBLE(11,2) | NO   |     | 0.00    | 存件费用    
+ over_hour_cost | DOUBLE(11,2) | NO   |     | 0.00    | 24小时内 元/小时
+ over_day_cost  | DOUBLE(11,2) | NO   |     | 0.00    | 超出一天 元/小时
+----------------+--------------+------+-----+---------+---------
+
+Table: protocol
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   |         
+ name      | VARCHAR(50)   | YES  |     |                   | 协议名称    
+ content   | TEXT(65535)   | YES  |     |                   | 协议      
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP |         
+-----------+---------------+------+-----+-------------------+---------
+
+Table: rechange_bill
+--------------+---------------+------+-----+-------------------+---------
+ Field        | Type          | Null | Key | Default           | Remarks 
+--------------+---------------+------+-----+-------------------+---------
+ id           | INT(10)       | NO   | PRI |                   |         
+ operator_id  | INT(10)       | NO   |     |                   |         
+ account_id   | INT(10)       | YES  |     |                   |         
+ phone        | VARCHAR(20)   | YES  |     |                   | 手机号，用户没有ID
+ order_id     | VARCHAR(50)   | YES  |     |                   | 订单编号    
+ type         | INT(10)       | NO   |     |                   | 充值类型 1-充值 2-取件
+ pay_platform | INT(10)       | YES  |     |                   | 1-微信 2 -支付宝
+ status       | INT(10)       | NO   |     | 2                 | 状态 1-成功 0-失败 2-待处理
+ account_type | INT(10)       | NO   |     |                   | 1-快递员 2-用户
+ create_time  | TIMESTAMP(19) | NO   |     | CURRENT_TIMESTAMP |         
+ amount       | DOUBLE(11,2)  | NO   |     | 0.00              |         
+--------------+---------------+------+-----+-------------------+---------
+
+Table: repair_application
+------------------+--------------+------+-----+---------+---------
+ Field            | Type         | Null | Key | Default | Remarks 
+------------------+--------------+------+-----+---------+---------
+ id               | INT(10)      | NO   | PRI |         | 报修单号    
+ type             | INT(10)      | NO   |     |         | 报修类型    
+ owner_id         | INT(10)      | NO   |     |         | 用户id    
+ phone            | VARCHAR(50)  | YES  |     |         | 用户手机号码  
+ device_id        | VARCHAR(50)  | NO   |     |         | 设备id    
+ cabinet_num      | INT(10)      | NO   |     |         | 箱子数量    
+ number           | INT(10)      | NO   |     |         | 箱子号     
+ repair_detail    | TEXT(65535)  | YES  |     |         | 报修情况描述  
+ photo_url        | VARCHAR(255) | YES  |     |         | 用户上传的图片路径
+ application_time | DATETIME(19) | NO   |     |         | 用户报修申请时间
+ order_time       | DATETIME(19) | YES  |     |         | 维修人员接单时间
+ fixed_time       | DATETIME(19) | YES  |     |         | 维修人员修好时间
+ status           | INT(10)      | NO   |     |         | 信报箱状态   
+ repair_man_id    | INT(10)      | YES  |     |         | 维修人员id  
+ repair_man_phone | VARCHAR(50)  | YES  |     |         | 维修人员手机号码
+------------------+--------------+------+-----+---------+---------
+
+Table: repair_man
+---------+-------------+------+-----+---------+---------
+ Field   | Type        | Null | Key | Default | Remarks 
+---------+-------------+------+-----+---------+---------
+ id      | INT(10)     | NO   | PRI |         | 维修人员id  
+ phone   | VARCHAR(50) | NO   |     |         | 维修人员手机号码
+ company | VARCHAR(50) | NO   |     |         | 维修人员手机号码
+---------+-------------+------+-----+---------+---------
+
+Table: session
+-----------+-------------+------+-----+---------+---------
+ Field     | Type        | Null | Key | Default | Remarks 
+-----------+-------------+------+-----+---------+---------
+ id        | VARCHAR(33) | NO   | PRI |         |         
+ accountId | INT(10)     | NO   |     |         |         
+ expireAt  | BIGINT(19)  | NO   |     |         |         
+-----------+-------------+------+-----+---------+---------
+
+Table: special_user
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   |         
+ device_id | VARCHAR(50)   | NO   |     |                   | 设备Id    
+ phone     | VARCHAR(13)   | YES  |     |                   | 特殊开门权限的人
+ ic_card   | VARCHAR(50)   | NO   |     |                   | ic卡id   
+ status    | INT(10)       | YES  |     | 1                 | 0：锁了 1：正常
+ terminal  | INT(10)       | YES  |     | 0                 | 0:未同步到终端 1：已同步到终端
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+-----------+---------------+------+-----+-------------------+---------
+
+Table: sys_menu
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   |         
+ pid       | INT(10)       | YES  |     |                   | 父节点     
+ name      | VARCHAR(50)   | YES  |     |                   | 菜单名     
+ level     | INT(10)       | YES  |     |                   | 层级      
+ sort      | INT(10)       | YES  |     |                   | 排序      
+ url       | VARCHAR(255)  | YES  |     |                   | 菜单地址    
+ status    | INT(10)       | YES  |     | 1                 | 状态 1 -正常
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP | 更新时间    
+-----------+---------------+------+-----+-------------------+---------
+
+Table: sys_role
+-----------+---------------+------+-----+-------------------+---------
+ Field     | Type          | Null | Key | Default           | Remarks 
+-----------+---------------+------+-----+-------------------+---------
+ id        | INT(10)       | NO   | PRI |                   | ID      
+ name      | VARCHAR(50)   | YES  |     |                   | 姓名      
+ status    | INT(10)       | YES  |     |                   | 状态 1-正常 
+ sysupdate | TIMESTAMP(19) | YES  |     | CURRENT_TIMESTAMP |         
+-----------+---------------+------+-----+-------------------+---------
+
+Table: sys_role_menu
+---------+---------+------+-----+---------+---------
+ Field   | Type    | Null | Key | Default | Remarks 
+---------+---------+------+-----+---------+---------
+ id      | INT(10) | NO   | PRI |         |         
+ role_id | INT(10) | YES  |     |         |         
+ menu_id | INT(10) | YES  |     |         |         
+---------+---------+------+-----+---------+---------
+

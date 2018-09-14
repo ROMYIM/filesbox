@@ -1,0 +1,91 @@
+#@layout()
+#define main()
+#@menu()
+#set(link="bind?name="+name)
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入手机号" />
+		<select id="status" class="form-control">
+			<option value="">审核状态</option>
+			<option value="已通过">已通过</option>
+			<option value="未通过">未通过</option>
+		</select>
+		<button id="search" class="btn btn-primary">搜索</button>
+	</div>
+	<div class="table">
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>用户ID</th>
+					<th width="10%">手机号码</th>
+					<th>箱子ID</th>
+					<th width="15%">设备号</th>
+					<th>箱子数</th>
+					<th>箱子号</th>
+					<th>申请操作</th>
+					<th width="10%">申请时间</th>
+					<th width="10%">操作时间</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : page.list)
+				<tr id="#(x.id)">
+					<td>#(x.owner_id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.unit)">#(x.box_id)</td>
+					<td title="#(x.floor)">#(x.device_id)</td>
+					<td title="#(x.cabinet_num)">#(x.cabinet_num)</td>
+					<td title="#(x.number)">#(x.number)</td>
+					<td title="#(x.code)">#if(x.code == com.filebox.common.model.BindApplication::BIND_CODE) <span style="color: blue">绑定</span> 
+					#elseif(x.code == com.filebox.common.model.BindApplication::UNBIND_CODE) <span style="color: red">解绑</span>
+						#end</td>
+					<td title="#date(x.application_time, " yyyy-MM-ddHH:mm")">#date(x.application_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td title="#date(x.pass_time, " yyyy-MM-ddHH:mm")">#date(x.pass_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td title="#(x.status))">#if(x.status ==
+						com.filebox.common.model.BindApplication::PENDING_STATUS)
+						<span style="color: red">未通过</span>
+						#elseif(x.status == com.filebox.common.model.BindApplication::PASS_STATUS) 
+						<span style="color: green">已通过</span>
+						#end
+					</td>
+					<td>#if(x.status ==
+						com.filebox.common.model.BindApplication::PASS_STATUS)
+						<span style="color: green">无操作</span>
+						#elseif(x.code ==
+						com.filebox.common.model.BindApplication::UNBIND_CODE)
+						<button
+							onclick="confirmAjaxAction('确定解绑？', 'bind/unbindBox/#(x.id)')"
+							class="btn btn-danger">解绑</button>
+						#elseif(x.code == com.filebox.common.model.BindApplication::BIND_CODE)
+						<a href="bind/checkInfo/#(x.id)" class="btn btn-warning">绑定</a>
+						#end
+					</td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+		#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var searchStr1 = $("#phone").val();
+			var searchStr2 = $("#status").val();
+			table.column(1).search(searchStr1).draw();
+			table.column(9).search(searchStr2).draw();
+		})
+	})
+</script>
+#end

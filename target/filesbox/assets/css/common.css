@@ -1,0 +1,198 @@
+html,body{height: 100%;}
+body{
+width: 100%;
+height: 100%;
+color: #3f3f3f;
+overflow-x: hidden;
+background: url(imgs/bodybg.png);
+text-shadow: 0 1px 1px rgba(0, 0, 0, .1), 0 0 2px rgba(0, 0, 0, .05);
+font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB",
+ "Hiragino Sans GB W3", "Microsoft YaHei UI", "Microsoft YaHei",
+ "WenQuanYi Micro Hei", sans-serif;
+}
+
+
+
+/************************头部区域**********************/
+.header{
+	min-height: 100px;
+	border-bottom: 1px solid #ddd;
+}
+.logo{
+	width: 220px;
+	height: 100px;
+	background:url(imgs/logo.png) center center no-repeat;
+	float: left;
+}
+.user{
+	display: inline-block;
+	padding-right: 20px;
+	margin-top: 50px;
+}
+.user a{
+	color: #FFF;
+	font-size: 14px;
+}
+.user a:hover{
+	color: #FF0;
+}
+
+/************************中间区域**********************/
+.main_container{
+	margin: 0px 20px 0px 20px;
+}
+.main_container .table{
+	margin-top: 10px;
+}
+.table_fiter{
+	height: 40px;
+	border-bottom: 1px solid #DDD;
+	margin-top: 10px;
+}
+.table_fiter .btn-right{
+	float: right;
+	margin: 0px 5px;
+}
+.table_fiter input,.table_fiter select{
+	display: inline-block;
+	width: 150px;
+}
+.table_fiter span{
+	padding: 0px 10px;
+}
+.left{
+	margin-top:0px;
+	width: 200px;
+	float: left;
+}
+.right{
+	margin-top:10px;
+	margin-left: 210px;
+}
+
+/************************侧边导航栏样式**********************/
+.affix ul.nav-pills{
+	width: 200px;
+}
+.affix ul.nav-pills li{
+	font-size: 16px;
+	border-bottom: 1px solid #ddd;
+}
+.affix ul.nav-pills li:active{
+	background-color: #337ab7;
+}
+
+.affix ul.nav-pills li:hover{
+	background-color: #523ab7;
+}
+
+/************************DataTables 重新定义样式**********************/
+div.dataTables_wrapper div.dataTables_info{
+	display: inline-block;
+	margin-right: 5px;
+	float: left;
+	margin-top: -4px;
+	font-size: 14px;
+}
+
+div.dataTables_wrapper div.dataTables_length{
+	margin-left: 5px;
+	display: inline-block;
+	margin-top: 0px;
+	font-size: 14px;
+}
+div.dataTables_wrapper div.dataTables_length select {
+	font-size: 12px;
+	
+}
+div.dataTables_wrapper div.dataTables_paginate{
+	margin-top: 0px;
+	display: inline-block;
+	float: right;
+	
+}
+/*********************表格Table样式定义**********************************/
+table{
+	background: #FFF;
+	text-align: center;	
+	table-layout:fixed;/* 只有定义了表格的布局算法为fixed，下面td的定义才能起作用。 */
+}
+table>tbody>tr:hover{
+	background: #F5F5F5;
+}
+.table>thead>tr>th{
+	text-align: center;	
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-bottom: 0px;
+}
+table>tbody>tr>td{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+table img{
+	max-width: 100px;
+	max-height: 40px;
+}
+table a{
+	display: inline-block;
+}
+table input[type=checkbox]{
+	margin-left: 3px;
+	float: left;
+}
+table .table_checkbox{
+	width: 37px;
+}
+table .selected{
+	background: #ddd;
+}
+/*****************分页***********************/
+
+/* 分页 */
+.jf-paginate {
+	text-align: center;
+	list-style-type: none;
+	margin: 20px 0;
+}
+.jf-paginate li {
+	display: inline;
+}
+.jf-paginate a {
+	display: inline;
+	margin-right: 2px;
+	// font-family: Courier New, Arial;
+	font-size: 16px;
+	color: #58595b;
+	background-color: #f0f0f0;
+	padding: 4px 8px;
+	text-decoration: none;
+}
+.jf-paginate a.current-page {
+	background-color: #6e7b8b;
+	color: #ffffff;
+	font-weight: bold;
+}
+.jf-paginate a.pre-page,.jf-paginate a.next-page {
+	background-color: #cccccc;
+	font-weight: bold;
+}
+.jf-paginate a:hover {
+	background-color: #6e7b8b;
+	color: #ffffff;
+}
+
+/*************form样式*******************/
+.account-form{
+	padding: 20px 0px;
+	width: 500px;
+}
+.account-form .submit{
+	margin-top: 100px;
+	text-align: center;
+}
+.account-form .submit button{
+	width: 184px;
+}

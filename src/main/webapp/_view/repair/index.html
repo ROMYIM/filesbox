@@ -1,0 +1,93 @@
+#@layout()
+#define main()
+#@menu()
+#set(link="repair?name="+name)
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入手机号" />
+		<select id="status" class="form-control">
+			<option value="">审核状态</option>
+			<option value="待维修">待维修</option>
+			<option value="维修中">维修中</option>
+			<option value="已维修">已维修</option>
+		</select>
+		<button id="search" class="btn btn-primary">搜索</button>
+	</div>
+	<div class="table">
+		<p>信报箱故障类型说明：1 柜门无法打开；2 柜门无法关闭；3 信报箱污损；4 信报箱被破坏；5 其他原因</p>
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="5%">用户ID</th>
+					<th width="8%">手机号码</th>
+					<th width="5%">类型</th>
+					<th width="12%">设备号</th>
+					<th width="5%">箱子数</th>
+					<th width="5%">箱子号</th>
+					<th width="6%">细节描述</th>
+					<th width="5%">图片</th>
+					<th width="10%">申请时间</th>
+					<th width="10%">接单时间</th>
+					<th width="10%">完成时间</th>
+					<th width="5%">状态</th>
+					<th width="6%">维修人Id</th>
+					<th width="8%">维修人电话</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : page.list)
+				<tr id="#(x.id)">
+					<td>#(x.owner_id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.type)">#(x.type)</td>
+					<td title="#(x.device_id)">#(x.device_id)</td>
+					<td title="#(x.cabinet_num)">#(x.cabinet_num)</td>
+					<td title="#(x.number)">#(x.number)</td>
+					<td title="#(x.repair_detail)"><a href="repair/repairDetail/#(x.id)">报修详情</a></td>
+					<td title="#(x.photo_url)"><a class="img" href="/filesbox#(x.photo_url??)"><img src="/filesbox#(x.photo_url??)"></a></td>
+					<td title="#date(x.application_time, " yyyy-MM-ddHH:mm")">#date(x.application_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td title="#date(x.order_time, " yyyy-MM-ddHH:mm")">#date(x.order_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td title="#date(x.fixed_time, " yyyy-MM-ddHH:mm")">#date(x.fixed_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td title="#(x.status)">
+					#if(x.status == com.filebox.common.model.RepairApplication::PENDING_STATUS) <span style="color: red">待维修</span> 
+					#elseif(x.status == com.filebox.common.model.RepairApplication::REAPIRING_STATUS) <span style="color: blue">维修中</span>
+					#elseif(x.status == com.filebox.common.model.RepairApplication::REPAIRED_STATUS) <span style="color: green">已维修</span>
+					#end
+					</td>
+					<td title="#(x.repair_man_id)">
+					#if(x.repair_man_id??)
+					<span>#(x.repair_man_id)</span>
+					#else
+					<a href="repair/repairMan/#(x.id)">维修人员</a>
+					#end
+					</td>
+					<td title="#(repair_man_phone)">#(x.repair_man_phone)</td>
+					
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+		#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var searchStr1 = $("#phone").val();
+			var searchStr2 = $("#status").val();
+			table.column(1).search(searchStr1).draw();
+			table.column(11).search(searchStr2).draw();
+		})
+	})
+</script>
+#end

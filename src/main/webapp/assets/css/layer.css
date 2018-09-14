@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+.layer{
+	background: #FFF;
+	width:280px;
+	height:80px;
+	
+	position: fixed;
+	left:50%;
+	top:50%;
+	margin-left: -140px;
+	margin-top: -40px;
+	z-index: 1000;
+	border:1px solid #DDD;
+	box-shadow:0px 0px 3px #DDD;
+	border-radius:5px;
+}
+
+.layer .layer-msg{
+	display: block;
+	padding-top:10px;
+	font-size:16px;
+	text-align: center;
+}
+.layer .layer-img{
+	text-align: center;
+	margin-top: 5px;
+}

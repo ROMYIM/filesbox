@@ -1,0 +1,106 @@
+#@layout()
+#define main()
+#@menu()
+
+<style>
+/****************postage-form***********************/
+.postage-form {
+	width: 350px;
+	margin-top: 20px;
+}
+
+.postage-form div {
+	margin: 10px 0px;
+}
+
+.postage-header {
+	padding-bottom: 5px;
+}
+
+.nav-tabs li a {
+	font-size: 18px;
+}
+</style>
+<div class="right">
+	<form id="repair_form" class="postage-form form-horizontal"
+		method="post" action="filebox/repairUpdate">
+		<div class="control-group">
+			<label class="control-label">信报箱ID</label>
+			<div class="controls">
+				<input class="form-control" type="text" value="#(filebox.id)"
+					name="id" readonly="readonly"> <input type="hidden"
+					id="boxStatus" name="box_status" value="#(filebox.box_status)">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">箱子编号</label>
+			<div class="controls">
+				<input class="form-control" type="text" value="#(filebox.number)"
+					name="number" readonly="readonly">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">箱子规格</label>
+			<div class="controls">
+				<select name="spec" disabled="disabled" class="form-control">
+					<option value="1" #(filebox.sepc==1?"selected":"")>小</option>
+					<option value="2" #(filebox.sepc==2?"selected":"")>小</option>
+					<option value="3" #(filebox.sepc==3?"selected":"")>小</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">故障码</label>
+			<div class="controls">
+				<select name="code" class="form-control">
+					<option value="0" #(filebox.code??==0 ?'selected="selected"':'' )>0-正常使用</option>
+					<option value="1" #(filebox.code??==1 ?'selected="selected"':'' )>1-柜门无法打开</option>
+					<option value="2" #(filebox.code??==2 ?'selected="selected"':'' )>2-柜门无法关闭</option>
+					<option value="3" #(filebox.code??==3 ?'selected="selected"':'' )>3-信报箱污损</option>
+					<option value="4" #(filebox.code??==4 ?'selected="selected"':'' )>4-信报箱被破坏</option>
+					<option value="5" #(filebox.code??==5 ?'selected="selected"':'' )>5-其他原因</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">备注</label>
+			<div class="controls">
+				<textarea rows="5" cols="50" class="form-control" name="remark">#(filebox.remark)</textarea>
+			</div>
+		</div>
+		<div class="control-group">
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	</form>
+</div>
+
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$("#repair_form").ajaxForm({
+			dataType : "json",
+			beforeSubmit : function(formData, jqForm, options) {
+				if ($("#boxStatus").val() == 1) {
+					showMsg("使用中的箱子不允许报修", 1000);
+					return false;
+				}
+			},
+			success : function(ret) {
+				if (ret.success) {
+					location.href = "filebox";
+				} else {
+					showErrorMsg(ret.msg);
+				}
+			},
+			error : function(ret) {
+				alert(ret);
+			},
+			complete : function(ret) {
+			} // 无论是 success 还是 error，最终都会被回调
+		});
+	});
+</script>
+#end

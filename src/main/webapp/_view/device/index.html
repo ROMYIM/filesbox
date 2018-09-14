@@ -1,0 +1,83 @@
+#@layout() #define main()
+#set(link="device?deviceName="+deviceName+"&operatorName="+operatorName)
+<!-- 第二步：添加如下HTML代码 -->
+<div class="table_fiter">
+	<form action="device" method="post">
+		<input class="form-control" id="deviceName" name="deviceName"
+			value="#(deviceName!='null'?deviceName:'')" type="text"
+			style="width: 200px;" placeholder="请输入信报箱名或设备ID" /> <select
+			id="operatorName" name="operatorName" class="form-control">
+			<option value="">运营商</option> #for(x :
+			com.filebox.admin.operator.OperatorService::operatorList())
+			<option value="#(x.name)" #(x.name==
+				operatorName?'selected="selected"':'')>#(x.name)</option> #end
+		</select>
+		<button id="search" type="submit" class="btn btn-primary">搜索</button>
+		#if(loginAccount.isSuperAdmin()) <a href="account"
+			class="btn btn-primary btn-right">超管入口</a>
+	</form>
+	#end
+</div>
+<div class="table">
+	<table id="dataTable" class="table table-bordered">
+		<thead>
+			<tr>
+				<th width="100px">序号</th>
+				<th>设备ID</th>
+				<th>信报箱名</th>
+				<th width="100px">柜子数量</th>
+				<th>运营商</th>
+				<th width="100px">状态</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			#for(x : page.list)
+			<tr id="#(x.id)">
+				<td>#(for.count)</td>
+				<td title="#(x.id)">#(x.id)</td>
+				<td title="#(x.name)">#(x.name)</td>
+				<td>#(x.cabinet_amount)</td>
+				<td title="#(x.operator_name)">#(x.operator_name)</td>
+				<td>#if(x.status==com.filebox.common.model.FileDevice::STATUS_OK)
+					<span>启用</span>
+
+					#elseif(x.status==com.filebox.common.model.FileDevice::STATUS_DISABLE)
+					<span style="color: red">未启用</span>
+					#elseif(x.status==com.filebox.common.model.FileDevice::STATUS_DEL)
+					<span style="color: red">删除</span> #end
+				</td>
+				<td><a href="device/setFileDeviceId/#(x.id)"
+					class="btn btn-info">查看</a> <a href="device/deviceSetting/#(x.id)"
+					class="btn btn-primary">设置</a>
+					<button
+						onclick="confirmAjaxAction('确定删除此信报箱设备《#(x.name)》','device/deleteDevice/#(x.id)')"
+						class="btn btn-danger">删除</button></td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+	#@paginate(page,link+"&")
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		//MsgBox.loading("正在打开。。。");
+		var table = $('#dataTable').DataTable({});
+		$("#search").click(function() {
+			/* //自己定义的搜索框，可以是时间控件，或者checkbox 等等
+			var args1 = $.trim($("#deviceName").val())
+			//用空格隔开，达到多条件搜索的效果，相当于两个关键字
+			table.search(args1).draw(); */
+		})
+		$("#operatorName").click(function() {
+			/* //自己定义的搜索框，可以是时间控件，或者checkbox 等等
+			var args2 = $("#operator option:selected").val();
+			//用空格隔开，达到多条件搜索的效果，相当于两个关键字
+			table.column(4).search(args2).draw();
+			//table.search(args1+" "+args2).draw(false);//保留分页，排序状态 */
+		})
+	})
+</script>
+#end
+

@@ -1,0 +1,97 @@
+#@layout() 
+#define main()
+#@adminMenu()
+<div class="right">
+	<div class="table_fiter">
+		<h3>添加型号</h3>
+	</div>
+	<form id="modelForm" class="form-horizontal account-form" action="#(model ? 'model/updateModel':'model/addModel')" role="form">
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">型号名称</label>
+			<div class="col-sm-9">
+				<input type="hidden" name="model.id" value="#(model.id??)">
+				<input type="text" id="textModleName" class="form-control" value="#(model.name??)"  name="model.name" required="required" placeholder="请输入型号名称" onchange='setInputValue(this)'>
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">型号编码</label>
+			<div class="col-sm-9">
+				<input type="text" id="textModleCode"  class="form-control" value="#(model.code??)"  name="model.code" required="required" placeholder="请输入型号编码" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">箱子个数</label>
+			<div class="col-sm-9">
+				<select id="boxNum" name="model.box_amount" class="form-control">
+					<option>请选择</option>
+					#for(i=10;i<=30;i++)
+						<option #(model.box_num??==i?'selected="selected"':(i==10?'selected="selected"':''))>#(i)</option>
+					#end
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">箱子详情</label>
+		</div>
+		<div id="details" class="form-group form">
+			#if(modelDetail)
+				#for(x : modelDetail)
+					<span class="col-sm-3 control-label">#(x.box_num)号箱</span>
+					<div class="col-sm-3">
+						<select class="form-control " name="boxSpec">
+							<option value="1" #(x.box_spec == 1?'selected="selected"':'')>小</option>
+							<option value="2" #(x.box_spec == 2?'selected="selected"':'')>中</option>
+							<option value="3" #(x.box_spec == 3?'selected="selected"':'')>大</option>
+						</select>
+					</div>
+					<span class="col-sm-3 control-label">楼层</span>
+					<div class="col-sm-3">
+						<select class="form-control " name="boxFloor">
+						#for(i=1;i<=10;i++)
+							<option  #(x.box_floor == i ?'selected="selected"':'')>#(i)</option>
+						#end
+						</select>
+					</div>
+				#end
+			#end
+		</div>
+		<div class="form-group submit">
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	</form>
+</div>
+	<script src="assets/js/jquery.form.min.js"></script>
+		<script type="text/javascript">
+		// 也用 ajax 提交比较好，这样有利于在出异常的时候信息不会丢失
+		$(document).ready(function() {
+			ajaxForm("modelForm","model");
+			$("#boxNum").change(function(){
+				var boxNum = $("#boxNum").val();
+				var optionHtml ="";
+				for(var i = 1;i<=10;i++){
+					optionHtml = optionHtml+"<option>"+i+"</option>";
+				}
+				var floorHtml='<span class="col-sm-3 control-label">楼层</span><div class="col-sm-3"><select class="form-control " name="boxFloor">'+optionHtml+'<select></div>';
+				
+				var innerHtml ="";
+				for(var i = 1;i <=boxNum;i++){
+					innerHtml=innerHtml + '<span class="col-sm-3 control-label\">'+i+'号箱</span><div class="col-sm-3"><select class="form-control" name="boxSpec"><option value="1">小</option><option value="2">中</option><option value="3">大</option></select></div>'
+					innerHtml=innerHtml+floorHtml;
+				}
+				$("#details").html(innerHtml);
+			})
+		});
+		
+		function setInputValue(obj) {
+			if (obj.id == "textModleName") {
+				if(document.getElementById("textModleName").value != ""){
+					document.getElementById("textModleCode").value = parseInt(document
+							.getElementById("textModleName").value, 16);
+				}else{
+					document.getElementById("textModleCode").value = "";
+				}
+			}
+		}
+		
+	</script>
+#end

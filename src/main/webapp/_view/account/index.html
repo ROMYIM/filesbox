@@ -1,0 +1,83 @@
+#@layout()
+#define main()
+#@adminMenu()
+#set(link="account?name="+name+"&phone="+phone)
+<div class="right">
+	<div class="table_fiter">
+		<form action="account" method="post">
+			<input class="form-control"  id="name" name="name"  value="#(name!='null'?name:'')"  type="text" placeholder="请输入姓名" />
+			<input class="form-control"  id="phone" name="phone"  value="#(phone!='null'?phone:'')"  type="text" placeholder="请输入手机号码" />
+			<button id="search"  type="submit" class="btn btn-primary">搜索</button>
+				<div class="btn-right">
+					<a href="account/add" class="btn btn-primary">添加</a>
+				</div>
+		</form>
+	</div>
+	<div class="table">
+		<table id="dataTable" class="table table-bordered table-condensed table-responsive">
+	    <thead>
+	        <tr>
+	            <th>管理员ID</th>
+	            <th>姓名</th>
+	            <th>管理员身份</th>
+	            <th>管理信报箱</th>
+	            <th>手机号码</th>
+	            <th>上次登录时间</th>
+	            <th>状态</th>
+	            <th style="width: 200px;">操作</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	     #for(x : page.list)
+	     	#set(accountId=x.id)
+			<tr id="#(x.id)">
+	        	<td>#(x.id)</td>
+	        	<td>#(x.name)</td>
+	        	<td>
+	        		#(x.role == com.filebox.common.model.Account::IDENTITY_SUPER ? "系统管理员":"普通管理员")
+	        	</td>
+	        	<td id="managerBoxs">
+	        		#if(x.role == com.filebox.common.model.Account::IDENTITY_SUPER)
+	        			全部
+	        		#else
+	        			#for(x:com.filebox.admin.account.AccountService::getManagerBox(accountId))
+	        				#if(for.last)
+	        					#(x.device_id)
+	        				#else
+	        					#(x.device_id),
+	        				#end
+	        				
+	        			#end
+	        		#end
+	        	</td>
+	        	<td>#(x.phone)</td>
+	        	<td>#(x.logintime)</td>
+	        	<td>
+	        		#if(x.status == com.filebox.common.model.Account::STATUS_OK)
+	        			正常
+	        		#else
+	        			<span style="color:red">禁用</span>
+	        		#end
+	        	</td>
+	        	<td>
+	        		#if(x.status == com.filebox.common.model.Account::STATUS_OK)
+	        			<button onclick="confirmAjaxAction('确定禁用《#(x.name)》？', 'account/disable?id=#(x.id)')" class="btn btn-warning">禁用</button>
+	        		#else
+	        			<button onclick="confirmAjaxAction('确定启用《#(x.name)》？', 'account/undisable?id=#(x.id)')" class="btn btn-warning">启用</button>
+	        		#end
+	        			<button onclick="confirmAjaxAction('确定删除《#(x.name)》？', 'account/delete?id=#(x.id)')" class="btn btn-danger">删除</button>
+	        			<a class="btn btn-info" href="account/edit/#(x.id)">编辑</a>
+	        	</td>
+	       	</tr>
+		#end
+	    </tbody>
+	</table>
+	#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script>
+</script>
+#end

@@ -1,0 +1,26 @@
+#@layout() 
+#define main()
+#@adminMenu()
+<div class="right">
+	<form id="operatorForm" class="form-horizontal account-form" action="#(operator ? 'operator/updateOperator':'operator/addOperator')" role="form">
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">运营商名称</label>
+			<div class="col-sm-9">
+				<input type="hidden" name="id" value="#(operator.id??)">
+				<input type="text" class="form-control" value="#(operator.name??)"  id="name" name="name" required="required" placeholder="请输入运营商名称">
+			</div>
+		</div>
+		<div class="form-group submit">
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	</form>
+</div>
+	<script src="assets/js/jquery.form.min.js"></script>
+		<script type="text/javascript">
+		// 也用 ajax 提交比较好，这样有利于在出异常的时候信息不会丢失
+		$(document).ready(function() {
+			ajaxForm("operatorForm","operator")
+		});
+		
+	</script>
+#end

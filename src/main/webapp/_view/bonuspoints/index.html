@@ -1,0 +1,49 @@
+#@layout()
+#define main()
+#@adminMenu()
+#set(link="bonuspoints?name="+name)
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入手机号" />
+		<button id="search" class="btn btn-primary">搜索</button>
+	</div>
+	<div class="table">
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>用户ID</th>
+					<th>手机号码</th>
+					<th>总积分</th>
+					<th>积分明细</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : page.list)
+				<tr id="#(x.id)">
+					<td title="#(x.id)">#(x.id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.points)">#(x.points)</td>
+					<td><a href="bonuspoints/getUserDetail/#(x.id)-#(x.points)" class="btn btn-sucess">详情链接</a></td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+		#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var searchStr1 = $("#phone").val();
+			table.column(1).search(searchStr1).draw();
+		})
+	})
+</script>
+#end

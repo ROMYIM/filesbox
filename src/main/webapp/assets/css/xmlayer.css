@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+.clearBodyHeight{
+	height: 100%;
+	max-height: 100%;
+	overflow: hidden;
+}
+.xmlayer-mask{
+	display:none;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.2);
+	position: fixed;
+	left: 0px;
+	top:0px;
+	bottom:0px;
+	right:0px;
+	z-index: 9999;
+}
+.xmlayer-portal{
+	display:none;
+	background:#FFF;
+	width:800px;
+	height:100%;
+	position: fixed;
+	top:0px;
+	bottom:0px;
+	right:-800px;
+	z-index: 10000;
+}
+.xmlayer-close{
+	position: absolute;
+	right:0px;
+	top:0px;
+}
+.xmlayer-close:hover{
+	cursor: pointer;
+}
+.ajax-portal{
+	display: block;
+	padding: 10px;
+}

@@ -1,0 +1,143 @@
+#@layout()
+#define main()
+<div class="right">
+	<div class="table_fiter">
+		<h3>设置柜子</h3>
+	</div>
+	<form id="deviceForm" class="form-horizontal account-form" action="device/updateDevice" role="form">
+		<div class="form-group from">
+			<label class="col-sm-3 control-label">设备ID</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" readonly="readonly" name="device.id" value="#(device.id)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱名称</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  name="device.name" value="#(device.name?? '')"  required="required" placeholder="请输入快递柜名称">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱地址</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  name="device.address" value="#(device.address?? '')"  required="required" placeholder="请输入快递柜地址">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">运营商</label>
+			<div class="col-sm-9">
+				<select  #(device.operator_id?'disabled="disabled"':'')  name="device.operator_id" class="form-control">
+					<option>请选择</option>
+					#for(x : com.filebox.admin.operator.OperatorService::operatorList())
+						<option #(x.id==device.operator_id ?'selected="selected"':'') value="#(x.id)">#(x.name)</option>
+					#end
+				</select>
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">省</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" readonly="false" id="device.province" name="device.province" value="#(device.province??)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">市</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  readonly="false" id="device.city" name="device.city" value="#(device.city??)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">区县</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  readonly="false" id="device.district" name="device.district" value="#(device.district??)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">经度</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  readonly="false" id="device.lng" name="device.lng" value="#(device.lng??)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">纬度</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  readonly="false" id="device.lat" name="device.lat" value="#(device.lat??)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">地图</label>
+			
+			<div class="col-sm-9">
+				<div id="container" style="width:100%; height:30000%"></div>
+				<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+				<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=6c90e6d2612bcafb5639442e26ebc297&plugin=AMap.Geocoder"></script>
+				<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+				<script type="text/javascript">
+    				var map = new AMap.Map("container", {
+        				resizeEnable: true,
+						zoom: 11,
+						center: [113.57197, 22.375565]
+    				}),    
+    				lnglatXY; //已知点坐标
+    				var clickEventListener = map.on('click', function(e){
+						lng = e.lnglat.getLng();
+						lat = e.lnglat.getLat();
+						document.getElementById("device.lng").value = lng;
+						document.getElementById("device.lat").value = lat;
+						lnglatXY = [lng, lat];
+						regeocoder();
+					});
+    				function regeocoder() {  //逆地理编码
+        				var geocoder = new AMap.Geocoder({
+            				radius: 100,
+            				extensions: "all"
+        				});        
+        				geocoder.getAddress(lnglatXY, function(status, result) {
+            				if (status === 'complete' && result.info === 'OK') {
+                				geocoder_CallBack(result);
+            				}
+        				});        
+        
+        				map.setFitView();
+    				}
+    				function geocoder_CallBack(data) {
+        				var address = data.regeocode.addressComponent; //返回地址描述
+        				document.getElementById("device.province").value = address.province;
+        				document.getElementById("device.city").value = address.city;
+        				document.getElementById("device.district").value = address.district;
+    				}
+				</script>
+			</div>
+		</div>
+		<div class="form-group form" style="position:relative">
+			<label class="col-sm-3 control-label" style="position:absolute; top:250px">信报箱状态</label>
+			<div class="col-sm-4" style="font-size: 18px; position:absolute; top:250px; left: 125px">
+				#if(device.status==com.filebox.common.model.FileDevice::STATUS_OK)
+				<label class="control-label inline"> 
+				<input type="radio" checked="checked" value="1" name="device.status">启用</label> 
+				<label class="control-label inline">
+				<input type="radio" value="0" name="device.status">停用</label>
+				#else
+				<label class="control-label inline"> 
+				<input type="radio" value="1" name="device.status">启用</label> 
+				<label class="control-label inline">
+				<input type="radio" checked="checked" value="0" name="device.status">停用</label>
+				#end
+			</div>
+		</div>
+		<div class="form-group submit" style="position:relative">
+			<button type="submit" class="btn btn-primary" style="position: absolute; top: 200px">提交</button>
+		</div>
+	</form>
+	
+</div>
+
+<script src="assets/js/jquery.form.min.js"></script>
+	<script type="text/javascript">
+	//也用 ajax 提交比较好，这样有利于在出异常的时候信息不会丢失
+	$(document).ready(function() {
+	ajaxForm("deviceForm","device");
+	});
+	</script>
+	
+#end

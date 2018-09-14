@@ -1,0 +1,50 @@
+#define layout()
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<base href="#(filesbox)/">
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="assets/css/common.css"/>
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/layer.min.js"></script>
+		<script src="assets/js/bootstrap.min.js"></script>		
+		<!-- DataTables CSS -->
+		<link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap.min.css">
+		<script type="text/javascript" charset="utf8" src="assets/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="assets/js/dataTables.bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="assets/js/common.js"></script>
+		<script type="text/javascript" charset="utf8" src="assets/js/xiaoxu.js"></script>
+		#@css?()
+		<title>信报箱</title>
+	</head>
+	<body>
+		<!--
+        	描述：头部
+        -->
+		<div class="header">
+			<a href="device" class="logo"></a>
+			<div class="user pull-right">
+				<a href="my/reset" class="btn btn-primary">修改密码</a>
+				<a href="login/logout" class="btn btn-primary">退出登录</a>
+			</div>
+		</div>
+		<!--
+        	描述：中间区域
+        -->
+		<div class="main_container">
+			#@main()
+		</div>
+		<!--
+        	描述：底部区域
+        -->
+		<div class="footer">
+		</div>
+### 模板函数安全调用，找到 js() 模板函数则调用，找不到则直接跳过
+### 适合于部分页面在 layout.html 提供的 js 文件之外，还需额外添加 js 资源的应用场景
+#@js?()
+	</body>
+</html>
+#end

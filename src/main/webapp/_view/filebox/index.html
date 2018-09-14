@@ -1,0 +1,194 @@
+#@layout() #define main() #@menu()
+<div class="right">
+	<div class="table_fiter">
+		<select id="spec" class="form-control">
+			<option value="">信报箱规格</option>
+			<option value="小">小</option>
+			<option value="中">中</option>
+			<option value="大">大</option>
+		</select> <select id="status" class="form-control">
+			<option value="">箱子状态</option>
+			<option value="使用中">使用中</option>
+			<option value="待使用">待使用</option>
+			<option value="维修中">维修中</option>
+			<option value="停用中">停用中</option>
+		</select>
+		<button
+			onclick="confirmDTActionUnBindBox('确定解绑该箱子','owner/unBindBox')"
+			class="btn-right btn btn-default">解绑</button>
+		<button onclick="setBindInfo()" class="btn-right btn btn-info">绑定用户信息</button>
+		#if(device.isDisable())
+		<button onclick="confirmAjaxAction('确定启用信报箱？'，'filebox/startDevice')"
+			class="btn-right btn btn-success">启用信报箱</button>
+		#else
+		<button
+			onclick="confirmAjaxAction('停用信报箱将导致所有箱子无法存入或者打开，是否确认这么操作？', 'filebox/stopDevice')"
+			class="btn-right btn btn-danger">停用信报箱</button>
+		#end
+		<button onclick="confirmDTAction('确定开门吗','filebox/openFileBox/')"
+			class="btn-right btn btn-success">开门</button>
+		<button onclick="repair()" class="btn-right btn btn-primary">报修</button>
+	</div>
+	<div class="table">
+		<p>信报箱故障码说明：0 正常使用；1 柜门无法打开；2 柜门无法关闭；3 信报箱污损；4 信报箱被破坏；5 其他原因</p>
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th class="table_checkbox"><input type="checkbox"
+						name="check-all" /></th>
+					<th>ID</th>
+					<th>编号</th>
+					<th>规格</th>
+					<th>故障码</th>
+					<th>楼层</th>
+					<th>信报箱状态</th>
+					<th>绑定状态</th>
+					<th>箱门状态</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : list)
+				<tr id="#(x.id)">
+					<td class="table_checkbox"><input type="checkbox" /></td>
+					<td>#(x.id)</td>
+					<td>#(x.number)</td>
+					<td>#if(x.spec == com.filebox.common.model.FileBox::SPEC_SM) <span>小</span>
+						#elseif(x.spec == com.filebox.common.model.FileBox::SPEC_MD) <span>中</span>
+						#else <span>大</span> #end
+					</td>
+					<td>#if(x.code != com.filebox.common.model.FileBox::CODE_0) <span
+						style="color: red">#(x.code)</span> #else <span>#(x.code)</span>
+						#end
+					</td>
+					<td>#(x.floor)</td>
+					<td>#if(x.box_status ==
+						com.filebox.common.model.FileBox::BOX_STATUS_USED) 使用中
+						#elseif(x.box_status ==
+						com.filebox.common.model.FileBox::BOX_STATUS_WAIT) <span>待使用</span>
+						#elseif(x.box_status ==
+						com.filebox.common.model.FileBox::BOX_STATUS_STOP) <span
+						style="color: red">停用中</span> #elseif(x.box_status ==
+						com.filebox.common.model.FileBox::BOX_STATUS_DELETE) <span
+						style="color: red">已删除</span> #else <span style="color: yellow">维修中</span>
+						#end
+					</td>
+					<td>#if(x.owner_id != null && x.owner_id !="" && x.owner_id !=
+						"null") <span style="color: red">已绑定</span> #else <span>未绑定</span>
+						#end
+					</td>
+					<td>#if(x.door_status ==
+						com.filebox.common.model.FileBox::DOOR_STATUS_OPEN) <span
+						style="color: red">打开</span> #elseif(x.door_status ==
+						com.filebox.common.model.FileBox::DOOR_STATUS_CLOSE) <span>关闭</span>
+						#else <span></span> #end
+					</td>
+				</tr>
+				#end
+			</tbody>
+		</table>
+	</div>
+</div>
+#end #define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+		var table = null;
+		$(document).ready( function () {
+			table = $('#dataTable').DataTable({initComplete:function(){checkBoxRadio("dataTable")}});
+			$("#spec").change(function(){
+			    var args2 = $("#spec").val();
+			    $('#dataTable').DataTable().column(3).search(args2).draw();
+			})
+			$("#status").change(function(){
+			    table.column(6).search($("#status").val()).draw();
+			})
+			
+		})
+		function repair(){
+			var ids = table.rows(".selected").ids();
+			if(ids.length>1){
+				showMsg("报修只支持单选",1000);
+				return;
+			}
+			var id = table.row(".selected").id();
+			if(id==null||id==undefined||id=="undefined"){
+				showMsg("请选择要报修的箱子",1000);
+				return;
+			}
+			location.href="filebox/repair/"+id;
+		}
+		function setBindInfo(){
+			var ids = table.rows(".selected").ids();
+			if(ids.length >1){
+				showMsg("绑定用户只支持单选",1000);
+				return;
+			}
+			var id = table.row(".selected").id();
+			if(id==null||id==undefined||id=="undefined"){
+				showMsg("请选择要绑定用户的箱子",1000);
+				return;
+			}
+			location.href="filebox/addOrUpdate/"+id;
+		}
+		
+		/**
+		 * 确认对话框层，点击确定才真正操作
+		 * @param msg 对话框的提示文字
+		 * @param operationUrl 点击确认后请求到的目标 url
+		 */
+		function confirmDTAction(msg,operationUrl) {
+			var ids = table.rows(".selected").ids();
+			if(ids.length>1){
+				showMsg("开门只支持单选",1000);
+				return;
+			}
+			var id = table.row(".selected").id();
+			if(id==null||id==undefined||id=="undefined"){
+				showMsg("请选择要打开的箱子",1000);
+				return;
+			}
+			layer.confirm(msg, {
+				icon: 0
+				, title:''                                    // 设置为空串时，title消失，并自动切换关闭按钮样式，比较好的体验
+				, shade: 0.4
+				, offset: "139px"
+			}, function(index) {                            // 只有点确定后才会回调该方法
+				/* var id = table.row(".selected").id();
+				if(id.length == 0 || id.length < 0 || id=="undefined" ||id == undefined){
+					showMsg("请选择要开启的箱子",1000);
+					return;
+				}else{ */
+					ajaxPost({"id":id},operationUrl);
+					layer.close(index); 
+				/* } */
+			});
+		}
+		
+		/**
+		 * 确认对话框层，点击确定才真正操作
+		 * @param msg 对话框的提示文字
+		 * @param operationUrl 点击确认后请求到的目标 url
+		 */
+		function confirmDTActionUnBindBox(msg,operationUrl) {
+			var ids = table.rows(".selected").ids();
+			if(ids.length>1){
+				showMsg("解绑只支持单选",1000);
+				return;
+			}
+			var id = table.row(".selected").id();
+			if(id==null||id==undefined||id=="undefined"){
+				showMsg("请选择要解绑的箱子",1000);
+				return;
+			}
+			layer.confirm(msg, {
+				icon: 0
+				, title:''                                    // 设置为空串时，title消失，并自动切换关闭按钮样式，比较好的体验
+				, shade: 0.4
+				, offset: "139px"
+			}, function(index) {                            // 只有点确定后才会回调该方法
+					ajaxPost({"id":id},operationUrl);
+					layer.close(index); 
+			});
+		}
+		
+	</script>
+#end

@@ -1,0 +1,46 @@
+#@layout()
+#define main()
+#@adminMenu()
+<div class="right">
+<div class="table_fiter">
+	<a href="operator/form" class="btn btn-primary">添加运营商</a>
+</div>
+<div class="table">
+	<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>运营商ID</th>
+            <th>运营商名称</th>
+            <th>管理设备数量</th>
+            <th style="width: 300px;">操作</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	    	#for(x : list)
+			<tr>
+	        	<td>#(for.count)</td>
+	        	<td>#(x.id)</td>
+	        	<td title="#(x.name)">#(x.name)</td>
+	        	<td>#(x.device_num)</td>
+	        	<td>
+	        		<a href="operator/form/#(x.id)" class="btn btn-primary">编辑</a>
+	        		<a onclick="confirmAjaxAction('确定删除《#(x.name)》？', 'operator/delete/#(x.id)')" class="btn btn-danger">删除</a>
+	        	</td>
+	        </tr>
+			#end	    
+	      
+	    </tbody>
+	</table>
+	</div>
+</div>
+#end
+
+#define js()
+	<script>
+		$(document).ready( function () {
+			//var table = $('#dataTable').DataTable();
+		})
+		
+	</script>
+#end

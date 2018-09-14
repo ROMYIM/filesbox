@@ -1,0 +1,66 @@
+#@layout()
+#define main()
+<div class="right">
+	<div class="table_fiter">
+		<h3>设置柜子</h3>
+	</div>
+	<form id="deviceForm" class="form-horizontal account-form" action="device/updateDevice" role="form">
+		<div class="form-group from">
+			<label class="col-sm-3 control-label">设备ID</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control" readonly="readonly" name="device.id" value="#(device.id)">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱名称</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  name="device.name" value="#(device.name?? '')"  required="required" placeholder="请输入快递柜名称">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱地址</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control"  name="device.address" value="#(device.address?? '')"  required="required" placeholder="请输入快递柜地址">
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">运营商</label>
+			<div class="col-sm-9">
+				<select  #(device.operator_id?'disabled="disabled"':'')  name="device.operator_id" class="form-control">
+					<option>请选择</option>
+					#for(x : com.filebox.admin.operator.OperatorService::operatorList())
+						<option #(x.id==device.operator_id ?'selected="selected"':'') value="#(x.id)">#(x.name)</option>
+					#end
+				</select>
+			</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱状态</label>
+			<div class="col-sm-4" style="font-size: 18px">
+				#if(device.status==com.filebox.common.model.FileDevice::STATUS_OK)
+				<label class="control-label inline"> 
+				<input type="radio" checked="checked" value="1" name="device.status">启用</label> 
+				<label class="control-label inline">
+				<input type="radio" value="0" name="device.status">停用</label>
+				#else
+				<label class="control-label inline"> 
+				<input type="radio" value="1" name="device.status">启用</label> 
+				<label class="control-label inline">
+				<input type="radio" checked="checked" value="0" name="device.status">停用</label>
+				#end
+			</div>
+		</div>
+		<div class="form-group submit">
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	</form>
+</div>
+
+<script src="assets/js/jquery.form.min.js"></script>
+	<script type="text/javascript">
+	//也用 ajax 提交比较好，这样有利于在出异常的时候信息不会丢失
+	$(document).ready(function() {
+	ajaxForm("deviceForm","device");
+	});
+	</script>
+#end

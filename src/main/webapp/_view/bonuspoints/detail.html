@@ -1,0 +1,71 @@
+#@layout()
+#define main()
+#@adminMenu()
+#set(link="bonuspoints?name="+name)
+<div class="right">
+	<div class="table_fiter">
+		<select id="type" class="form-control">
+			<option value="">加分类型</option>
+			<option value="开门">开门</option>
+			<option value="报修">报修</option>
+			<option value="不正当关门">不正当关门</option>
+			<option value="人为损坏">人为损坏</option>
+		</select>
+		<input class="form-control" type="text" id="create_time" name="create_time" placeholder="创建时间">
+		<button id="search" class="btn btn-primary">搜索</button>
+	</div>
+	<div class="table">
+	<p>现总积分为：#(totalPoints)</p>
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>创建时间</th>
+					<th>加分类型</th>
+					<th>分数</th>
+					<th>备注</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : page.list)
+				<tr id="#(x.id)">
+					<td title="#date(x.create_time,"yyyy-MM-dd HH:mm")">#date(x.create_time, "yyyy-MM-dd HH:mm")</td>
+					<td>#if(x.points == 1)<span>开门</span>
+						#elseif(x.points == 2)<span>报修</span>
+						#elseif(x.points == -1)<span>不正当关门</span>
+						#elseif(x.points == -3)<span>人为损坏</span>
+						#end</td>
+					<td title="#(x.points)">#(x.points)</td>
+					<td title="#(x.detail)">#(x.detail)</td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+		#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="assets/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$('#create_time').datetimepicker({
+			language : "zh-CN",
+			autoclose : true,
+			minView: "month",//设置只显示到月份
+			format : "yyyy-mm-dd",
+			todayBtn: true//显示今日按钮
+		});
+		$("#search").click(function() {
+			var searchStr1 = $("#type").val();
+			var searchStr2 = $("#create_time").val();
+			table.column(0).search(searchStr2).draw();
+			table.column(1).search(searchStr1).draw();
+		})
+	})
+</script>
+#end

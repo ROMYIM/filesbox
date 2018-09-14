@@ -1,0 +1,55 @@
+#@layout() #define main() #@adminMenu()
+<div class="right">
+	<form id="protocolForm" class="form-horizontal account-form"
+		action="#(protocol ? 'protocol/updateProtocol':'protocol/addProtocol')"
+		role="form" method="post">
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">协议名称</label>
+			<div class="col-sm-9">
+				<input type="hidden" name="id" value="#(protocol.id??)"> <input
+					type="text" class="form-control" value="#(protocol.name??)"
+					id="name" name="name" required="required" placeholder="请输入协议名称">
+			</div>
+			<label class="col-sm-3 control-label">协议内容</label>
+			<div class="col-sm-9">
+				<input type="hidden" id="content" name="content" value="">
+			</div>
+		</div>
+
+	</form>
+	<div style="margin-top: -20px; margin-left: 120px; width: 80%">
+		<!-- 加载编辑器的容器 -->
+		<script id="container" type="text/plain">
+					#(protocol.content??)
+    			</script>
+
+	</div>
+	<div class="form-group submit" style="width: 100px; margin-left:350px;margin-top: 30px; ">
+		<button type="submit" class="btn btn-primary" style="width: 150px" onclick="onSubmit()">提交</button>
+	</div>
+</div>
+<script src="assets/js/jquery.form.min.js"></script>
+<script type="text/javascript">
+	// 也用 ajax 提交比较好，这样有利于在出异常的时候信息不会丢失
+	$(document).ready(function() {
+		ajaxForm("protocolForm", "protocol")
+	});
+	
+	function onSubmit(){
+		var myHtml =UE.getEditor('container').body.innerHTML;
+		$("#content").val(myHtml);
+		$("#protocolForm").submit();
+	}
+</script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="./ueditor/ueditor.config.js"></script>
+编辑器源码文件
+<script type="text/javascript" src="./ueditor/ueditor.all.js"></script>
+手动加载语言
+<script type="text/javascript" src="./ueditor/lang/zh-cn/zh-cn.js"></script>
+
+实例化编辑器
+<script type="text/javascript">
+	var ue = UE.getEditor('container');
+</script>
+#end

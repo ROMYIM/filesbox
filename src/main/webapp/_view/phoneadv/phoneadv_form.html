@@ -1,0 +1,140 @@
+#@layout() 
+#define main()
+#@adminMenu()
+<div class="right">
+		<div >
+		<form id="advForm1" class="form-horizontal account-form"  action="#(phoneadv ? 'phoneadv/update':'phoneadv/save' )" method="post"  enctype="multipart/form-data">
+		<div class="form-group">
+				<label class="col-sm-3 control-label">广告类型</label>
+				<div class="radio-inline" >
+				<input type="radio"  name="radio"  value="1" id ="message1"   onclick="advlink.style.display='none';messagelink.style.display='';">广告链接
+				</div>
+				<div class="radio-inline">
+				<input  type="radio" name="radio"  value="2"  id ="message2"  onclick="advlink.style.display='';messagelink.style.display='none';">资讯
+			</div>
+		</div>
+		<div class="form-group form"  id="advlink">
+		<label class="col-sm-3 control-label">链接</label>
+		<div class="col-sm-9">		
+				<select id="informationlink" name="advertisingPhone.informationlink" class="form-control" >
+					<option value ="">#(phoneadv?(phoneadv.informationlink?phoneadv.informationlink:'请选择资讯标题'):'请选择资讯标题')</option>
+						#for(x : com.filebox.admin.information.InformationService::titlelist())
+						<option value ="#(x.title)">#(x.title)</option>
+					#end
+				</select>		
+		</div>
+		</div>
+		<div class="form-group form"  id="messagelink">
+		<label class="col-sm-3 control-label">链接</label>
+		<div class="col-sm-9">		
+			<input  type="text" id="link" class="form-control"  name="advertisingPhone.link"  value="#(phoneadv.link??)">
+		</div>
+		</div>
+		<div class="form-group form">
+			<label class="col-sm-3 control-label">排序</label>
+			<div class="col-sm-9">
+				<input type="hidden" name="advertisingPhone.id" value="#(phoneadv?phoneadv.id:'')">
+				<input type="number" class="form-control" min="1" max="300" value="#(phoneadv.sort??)"  
+					 name="advertisingPhone.sort" required="required" placeholder="请输入排序号">
+			</div>
+		</div>
+		<div class="form-group"   id="linkForm" >
+			<label class="col-sm-3 control-label">图片</label>
+			<div class="col-sm-9">
+				<input type="file" name="photo" accept="image/png,image/gif,image/jpeg" #(phoneadv ? '':'required="required" ') class="form-control" />
+			</div>
+		</div>
+		
+		#if(phoneadv)
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+				<a class="img" href="#(filesbox)#(phoneadv.photo)">
+				<img style="width: 300px; height: 100px"
+					src="#(filesbox)#(phoneadv.photo)" /></a>
+
+			</div>
+		</div>
+		#end
+		
+		<div class="form-group">
+			<label class="col-sm-3 control-label">运营商</label>
+			<div class="col-sm-9">
+				<select  name="advertisingPhone.operatorId" class="form-control" required="required" >
+					<option value ="">请选择运营商</option>
+					#if(phoneadv??)
+						#for(x : com.filebox.admin.operator.OperatorService::operatorList())
+						<option value ="#(x.id)" #(phoneadv.operatorId == x.id ?'selected="selected"':'')>#(x.name)</option>
+						#end
+					#else
+						#for(x : com.filebox.admin.operator.OperatorService::operatorList())
+						<option value ="#(x.id)">#(x.name)</option>
+						#end
+					#end
+				</select>			
+			</div>
+		</div>
+			<div class="form-group form">
+			<label class="col-sm-3 control-label">信报箱状态</label>
+			<div class="col-sm-4" style="font-size: 18px">
+			<label class="control-label inline"> 
+			<input type="radio" id="adv_start" value="1" name="advertisingPhone.adv_status">启用</label> 
+			<label class="control-label inline">
+			<input type="radio" id="adv_stop" value="0" name="advertisingPhone.adv_status">停用</label>
+			</div>
+		</div>
+		<div class="form-group submit">
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	</form>
+		</div>
+	
+		
+</div>
+#end
+
+#define js()
+	<script src="assets/js/jquery.form.min.js"></script>
+	<script type="text/javascript"   src="ueditor/ueditor.config.js"></script> 
+	<script type="text/javascript"   src="ueditor/ueditor.all.js"></script>
+	<script type="text/javascript">
+	// 使用 ajax form 上传文件
+	$(document).ready(function() {
+		// ajaxForm 可以是无参或者一个参数，参数只能是一个回调或json options，支持 jquery $.ajax的所有参数
+		#if(phoneadv??)
+			#if(phoneadv.informationlink??)
+				$("#message2").attr("checked",true);
+			#else
+				$("#message1").attr("checked",true);
+			#end
+		#else
+			$("#message1").attr("checked",true);	
+		#end
+		
+		#if(!phoneadv.informationlink??)
+			$("#advlink").css({ display: "none"});
+		#else
+			$("#messagelink").css({ display: "none"});
+		#end
+		
+		#if(phoneadv??)
+			#if(phoneadv.adv_status==0)
+				$("#adv_stop").attr("checked",true);
+			#else
+				$("#adv_start").attr("checked",true);
+			#end
+		#else
+			$("#adv_start").attr("checked",true);
+		#end
+		
+		$("#message1").click(function(){
+		    	$("#informationlink").val("");
+		    });
+		$("#message2").click(function(){
+	    	$("#link").val("");
+	    });
+		ajaxForm("advForm1","phoneadv");
+		
+	});
+
+	</script>
+#end

@@ -1,0 +1,74 @@
+#@layout()
+#define main()
+#@menu()
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入手机号" />
+		<button id="search" class="btn btn-primary">搜索</button>
+		#if(noTerminalList.size() == 0)
+			<button id="toTerminal" style="float: right;" onclick="confirmAjaxAction('确定发送并更新终端特殊用户？', 'specialUser/sendSpecialToTerminal')"
+							class="btn btn-default">已同步到终端</button>
+		#else
+			<button id="toTerminal" style="float: right;" onclick="confirmAjaxAction('确定发送并更新终端特殊用户？', 'specialUser/sendSpecialToTerminal')"
+							class="btn btn-warning">同步到终端</button>
+		#end
+	
+		<a href="specialUser/add" class="btn-right btn btn-success"  >添加特殊用户</a>
+		
+	</div>
+	<div class="table">
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>手机号码</th>
+					<th>IC卡ID</th>
+					<th>状态</th>
+					<th style="width: 300px;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : list)
+				<tr>
+					<td>#(x.id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.ic_card)">#(x.ic_card)</td>
+					<td>#if(x.status ==
+						com.filebox.common.model.SpecialUser::STATUS_OK) <span>正常</span>
+						#else <span style="color: red">禁用</span> #end
+					</td>
+					<td>#if(x.status ==
+						com.filebox.common.model.SpecialUser::STATUS_OK)
+						<button
+							onclick="confirmAjaxAction('确定禁用？', 'specialUser/lockSpecialUser/#(x.id)')"
+							class="btn btn-warning">禁用</button> #else
+						<button
+							onclick="confirmAjaxAction('确定启用？', 'specialUser/unlockSpecialUser/#(x.id)')"
+							class="btn btn-success">启用</button> #end
+						<button
+							onclick="confirmAjaxAction('确定删除？', 'specialUser/deleteSpecialUser/#(x.id)')"
+							class="btn btn-danger">删除</button> <a href="specialUser/update/#(x.id)"
+						class="btn btn-primary">编辑</a>
+					</td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var serachStr = $("#phone").val();
+			table.column(1).search($("#phone").val()).draw();
+		})
+	})
+</script>
+#end

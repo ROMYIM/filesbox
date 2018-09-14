@@ -1,0 +1,56 @@
+#@layout()
+#define main()
+#@menu()
+#set(link="repair?name="+name)
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入维修人员手机号" />
+		<input class="form-control" type="text" id="company"
+			placeholder="请输入维修人员公司全称" />
+		<button id="search" class="btn btn-primary">搜索</button>
+	</div>
+	<div class="table">
+	#if(information??)
+	<p>信报箱报修基本信息：报修号：#(information.id)；报修用户号码：#(information.phone)；信报箱设备号：#(information.device_id)；信报箱cabinet：#(information.cabinet_num)；信报箱号：#(information.number)；故障类型：#(information.type)：报修时间：#(information.application_time)</p>
+	#end
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>维修人员ID</th>
+					<th width="10%">维修人员电话</th>
+					<th>维修人员所在公司</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : page.list)
+				<tr id="#(x.id)">
+					<td title="#(x.id)">#(x.id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.company)">#(x.company)</td>
+					<td><a href="repair/acceptRepair/#(x.id)-#(information.id)" class="btn btn-warning">派遣维修人员</a></td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+		#@paginate(page,link+"&")
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var searchStr1 = $("#phone").val();
+			var searchStr2 = $("#company").val();
+			table.column(1).search(searchStr1).draw();
+			table.column(2).search(searchStr2).draw();
+		})
+	})
+</script>
+#end

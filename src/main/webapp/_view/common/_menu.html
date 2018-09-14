@@ -1,0 +1,22 @@
+#@layout() #define menu()
+<div class="left">
+	<div class="affix">
+		<ul id="menuList" class="nav nav-pills nav-stacked" data-spy="affix"
+			data-offset-top="125">
+			<li><a href="filebox">信报箱管理</a></li>
+			<li><a href="owner">信报箱用户管理</a></li>
+			<li><a href="specialUser">特殊用户管理</a></li>
+			#if(count > 0)
+			<li><a href="bind">有#(count)个申请</a></li>
+			#else
+			<li><a href="bind">绑定记录</a></li>
+			#end
+			#if(repairCount > 0)
+			<li><a href="repair">有#(repairCount)个维修申请</a></li>
+			#else
+			<li><a href="repair">维修记录</a></li>
+			#end
+		</ul>
+	</div>
+</div>
+#end

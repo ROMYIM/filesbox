@@ -1,0 +1,73 @@
+#@layout()
+#define main()
+#@menu()
+<div class="right">
+	<div class="table_fiter">
+		<input class="form-control" type="text" id="phone"
+			placeholder="请输入手机号" />
+		<button id="search" class="btn btn-primary">搜索</button>
+		<a href="owner/add" class="btn-right btn btn-success">添加箱子用户</a>
+		<a href="owner/batAdd" class="btn-right btn btn-warning">批量导入箱子用户</a>
+	</div>
+	<div class="table">
+		<table id="dataTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>手机号码</th>
+					<th>单元号</th>
+					<th>楼号</th>
+					<th>房号</th>
+					<th>上次登录时间</th>
+					<th>状态</th>
+					<th style="width: 300px;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				#for(x : list)
+				<tr>
+					<td>#(x.owner_id)</td>
+					<td title="#(x.phone)">#(x.phone)</td>
+					<td title="#(x.unit)">#(x.unit)</td>
+					<td title="#(x.floor)">#(x.floor)</td>
+					<td title="#(x.room_address)">#(x.room_address)</td>
+					<td title="#date(x.login_time, " yyyy-MM-ddHH:mm")">#date(x.login_time,
+						"yyyy-MM-dd HH:mm")</td>
+					<td>#if(x.owner_device_status ==
+						com.filebox.common.model.OwnerDetail::STATUS_OK) <span>正常</span>
+						#else <span style="color: red">禁用</span> #end
+					</td>
+					<td>#if(x.owner_device_status ==
+						com.filebox.common.model.OwnerDetail::STATUS_OK)
+						<button
+							onclick="confirmAjaxAction('确定禁用？', 'owner/lockOwnerDevice/#(x.owner_id)')"
+							class="btn btn-warning">禁用</button> #else
+						<button
+							onclick="confirmAjaxAction('确定启用？', 'owner/unlockOwnerDevice/#(x.owner_id)')"
+							class="btn btn-success">启用</button> #end
+						<button
+							onclick="confirmAjaxAction('确定删除？', 'owner/deleteOwnerDevice/#(x.owner_id)')"
+							class="btn btn-danger">删除</button> <a href="owner/update/#(x.owner_id)"
+						class="btn btn-primary">编辑</a>
+					</td>
+				</tr>
+				#end
+
+			</tbody>
+		</table>
+	</div>
+</div>
+#end
+
+#define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var table = $('#dataTable').DataTable();
+		$("#search").click(function() {
+			var serachStr = $("#phone").val();
+			table.column(1).search($("#phone").val()).draw();
+		})
+	})
+</script>
+#end

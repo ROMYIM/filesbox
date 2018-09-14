@@ -1,0 +1,70 @@
+### 分页模板函数，五个参数含义分别为：当前页、页大小，总页数，总行数，分页前方的链接
+#define paginate(page,link)
+#setLocal(currentPage=page.pageNumber,pageSize=page.pageSize,totalPage=page.totalPage,totalRow=page.totalRow)
+#setLocal(pageLink = link+"pageSize="+pageSize+"&pageNum=")
+
+#setLocal(startPage = currentPage - 3)
+#if(startPage < 1)
+	#setLocal(startPage = 1)
+#end
+
+#setLocal(endPage = currentPage + 3)
+#if(endPage > totalPage)
+	#setLocal(endPage = totalPage)
+#end
+<div class="fixed-table-pagination" >
+	<div class="pull-left pagination-detail">
+		<span class="pagination-info">每页</span>
+		<span class="page-list">
+				<span class="btn-group dropup">
+					<button
+						type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						<span class="page-size">#(pageSize)</span> <span class="caret"></span>
+					</button>
+				<ul class="dropdown-menu" role="menu">
+					<li role="menuitem" class="active"><a href="#(link)pageNum=1&pageSize=10">10</a></li>
+					<li role="menuitem"><a href="#(link)pageNum=1&pageSize=25">25</a></li>
+					<li role="menuitem"><a href="#(link)pageNum=1&pageSize=50">50</a></li>
+					<li role="menuitem"><a href="#(link)pageNum=1&pageSize=100">100</a></li>
+				</ul>
+				</span>项，共#(totalRow)项</span>
+	</div>
+		
+	<div class="pull-right" style="display: inline-block;margin: -20px 0px;">
+		<ul class="pagination">
+		#if(currentPage == 1)
+			<li class="page-number"><a href="javascript:void(0);" class="pre-page">上页</a></li>
+		#else
+			<li class="page-number"><a href="#(pageLink)#(currentPage - 1)#(append)" class="pre-page">上页</a></li>
+		#end
+		#if(currentPage - 3 > 1)
+			<li class="page-number"><a href="#(pageLink)1#(append)">1</a></li>
+		#end
+		#if(currentPage > 6 && currentPage + 3 < totalPage)
+			<li class="page-last-separator disabled"><a href="#">...</a></li>
+		#end
+		#for(i : [startPage..endPage])
+			#if(currentPage == i)
+				<li class="page-number active"><a href="javascript:void(0);" class="current-page">#(i)</a></li>
+			#else
+				<li class="page-number"><a href="#(pageLink)#(i)#(append)">#(i)</a></li>
+			#end
+		#end
+		
+		#if(totalPage > 6 && currentPage + 3 < totalPage)
+			<li class="page-last-separator disabled"><a href="#">...</a></li>
+		#end
+			
+		#if(currentPage + 3 < totalPage)
+			<li class="page-number"><a href="#(pageLink)#(totalPage)#(append)">#(totalPage)</a></li>
+		#end
+		#if(currentPage == totalPage)
+			<li class="page-number"><a href="javascript:void(0);" class="next-page">下页</a></li>
+		#else
+			<li class="page-number"><a href="#(pageLink)#(currentPage + 1)#(append)" class="next-page">下页</a></li>	
+		#end
+		</ul>
+	</div>
+</div>
+#end

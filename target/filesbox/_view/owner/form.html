@@ -1,0 +1,183 @@
+#@layout() #define main() #@menu()
+<div class="right">
+	<form id="ownerForm" class="form-horizontal account-form"
+		action="owner/addOrUpdateOwnerWithBoxs">
+		#if(owner??)
+		<div class="form-group">
+			<label class="col-sm-3 control-label">信报箱用户ID</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control" value="#(owner.owner_id)"
+					name="ownerId" readonly="readonly">
+			</div>
+		</div>
+		#end
+		<div class="form-group">
+			<label class="col-sm-3 control-label">手机号</label>
+			<div class="col-sm-7">
+				<input type="number" class="form-control" value="#(owner.phone??)"
+					placeholder="请输入箱子归属人手机号" id="phone" name="phone"
+					onchange="searchOwnerInfo(this)">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">单元号</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control" value="#(owner.unit??)"
+					placeholder="请输入单元号" id="unit" name="unit">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">楼号</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control" value="#(owner.floor??)"
+					placeholder="请输入楼号" id="floor" name="floor">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">房号</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control"
+					value="#(owner.room_address??)" placeholder="请输入房号"
+					id="roomAddress" name="roomAddress">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">IC卡号</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control"
+					value="#(owner.password_card??)" placeholder="请输入IC卡号"
+					id="passwordCard" name="passwordCard">
+			</div>
+			<!-- #if(owner.password_card??)
+			<button
+				class="col-sm-1 btn btn-danger" style="width: 65px">解绑卡</button>
+			#end -->
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">指纹</label>
+			#if(owner.password_fingerprint??) <label
+				class="col-sm-7 control-label" style="color: red;">已绑定指纹</label>
+			#else <label class="col-sm-7 control-label">未绑定指纹</label>
+			#end 
+			<input type="hidden" value="#(owner.password_fingerprint??)"
+				id="passwordFingerPrint" name="passwordFingerPrint" />
+			<!-- #if(owner.password_fingerprint??)
+			<button
+				class="col-sm-1 btn btn-danger" style="width: 80px">解绑指纹</button>
+			#end -->
+		</div>
+		<label style="color: red; margin-left: 28px; margin-top: 18px">请选择绑定的箱子</label>
+		<div class="table right" style="margin-left: 35px">
+			<table id="dataTable" class="table table-bordered">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>柜体编号</th>
+						<th>箱子编号</th>
+						<th class="table_checkbox"><input type="checkbox"
+							name="check-all" /></th>
+					</tr>
+				</thead>
+				<tbody>
+					#for(x : boxslist)
+					<tr id="#(x.id)">
+						<td>#(x.id)</td>
+						<td>#(x.cabinet_num)</td>
+						<td>#(x.number)</td> #if(x.owner_id??)
+						<td class="table_checkbox"><input type="checkbox" id="items"
+							name="items" value=#(x.cabinet_num)-#(x.number) checked="checked" /></td>
+						#else
+						<td class="table_checkbox"><input type="checkbox" id="items"
+							value=#(x.cabinet_num)-#(x.number) name="items" /></td> #end
+					</tr>
+					#end
+				</tbody>
+			</table>
+		</div>
+		<input type="hidden" id="ids" name="ids" />
+		<div class="form-group submit"
+			style="margin-top: -10px; margin-left: 26px">
+			<button id="btnSubmit" type="button" class="btn btn-primary"
+				onclick="onSubmit()">提交</button>
+		</div>
+	</form>
+</div>
+#end #define js()
+<script src="assets/js/jquery.form.min.js"></script>
+<script type="text/javascript">
+	function onSubmit() {
+		var obj = document.getElementsByName('items'); //选择所有name="'items'"的对象，返回数组 
+		//取到对象数组后，我们来循环检测它是不是被选中 
+		var str = '';
+		for (var i = 0; i < obj.length; i++) {
+			if (obj[i].checked)
+				str += obj[i].value + ','; //如果选中，将value添加到变量s中 
+		}
+		$("#ids").val(str);
+
+		layer.confirm("绑定箱子: " + $("#ids").val(), {
+			icon : 0,
+			title : '' // 设置为空串时，title消失，并自动切换关闭按钮样式，比较好的体验
+			,
+			shade : 0.4,
+			offset : "139px"
+		}, function(index) { // 只有点确定后才会回调该方法
+			$("#ownerForm").submit();
+			layer.close(index); // 需要调用 layer.close(index) 才能关闭对话框
+		});
+
+	}
+
+	$(document).ready(function() {
+		$("#ownerForm").ajaxForm({
+			dataType : "json",
+			beforeSubmit : function(formData, jqForm, options) {
+			},
+			success : function(ret) {
+				if (ret.success) {
+					location.href = "owner";
+					alert(ret.msg);
+				} else {
+					showErrorMsg(ret.msg);
+				}
+			},
+			error : function(ret) {
+				alert(ret);
+			},
+			complete : function(ret) {
+			} // 无论是 success 还是 error，最终都会被回调
+		});
+	});
+
+	function searchOwnerInfo(obj) {
+		$.ajax('owner/getOwnerInfo', {
+			type : "POST",
+			dataType : "json",
+			data : {
+				myPhone : $("#phone").val()
+			},
+			beforeSend : function() {
+
+			},
+			error : function(ret) {
+				showErrorMsg(ret);
+			},
+			success : function(ret) {
+				if (ret.success) {
+					var data = ret.data;
+					if (data != "" && data != null) {
+						$("#unit").val(data.unit);
+						$("#floor").val(data.floor);
+						$("#roomAddress").val(data.room_address);
+						$("#passwordCard").val(data.password_card);
+					}
+				} else {
+					var msg = ret.msg;
+				}
+			}
+		});
+
+	}
+</script>
+#end

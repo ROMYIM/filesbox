@@ -1,0 +1,56 @@
+#@layout() 
+#define main()
+#@adminMenu()
+<div class="right">
+	<form id="inforForm" class="form-horizontal account-form"  action="#(information ? 'information/update':'information/save' )" method="post"  role="form">
+			<div class="form-group form"  >
+            <label class="col-sm-3 control-label">标题</label>
+            <div class="col-sm-9">
+                <input  class="form-control"  type="text"  id="title"  name="title"  value="#(information.title??)">
+            </div>
+            </div>
+            <div class="form-group form">
+			<label class="col-sm-3 control-label">排序</label>
+			<div class="col-sm-9">
+				<input type="hidden" name="information.id" value="#(information?information.id:'')">
+				<input type="number" class="form-control" min="1" max="300" value="#(information.sort??)"  
+					 name="information.sort" required="required" placeholder="请输入排序号">
+			</div>
+		</div>
+		<div class="form-group form">
+			<script id="editor"    type="text/plain"  style="width:900px;height:500px;">
+					#(information.content??)</script>
+			<script type="text/javascript"> 
+      //实例化编辑器      //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下 引用该编辑器，
+      //直接调用UE.getEditor('editor')就能拿到相关的实例
+      var ue = UE.getEditor('editor');
+      </script>
+		</div>
+		<div>
+		<input  type="hidden"   name="content"   id="get_content"  >
+		</div>
+
+		<div class="form-group submit">
+			<button type="button" class="btn btn-primary" onclick="a()">提交</button>
+		</div>
+	</form>
+</div>
+#end
+
+#define js()
+	<script src="assets/js/jquery.form.min.js"></script>
+	<script type="text/javascript">
+	// 使用 ajax form 上传文件
+ $(document).ready(function() {
+		// ajaxForm 可以是无参或者一个参数，参数只能是一个回调或json options，支持 jquery $.ajax的所有参数
+		ajaxForm("inforForm","information");
+	}); 
+	function a(){
+		$("#get_content").val(UE.getEditor('editor').body.innerHTML);
+		//var a = $("#title").val();
+		//var con = $("#get_content").val();
+		/* ajaxForm("inforForm","information"); */
+		$("#inforForm").submit();
+	}
+	</script>
+#end
